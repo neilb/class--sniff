@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Class::Sniff;
-use Getopt::Long;
+use Getopt::Long 2.24 qw/ :config no_ignore_case /;
 use File::Find::Rule;
 use File::Spec;
 

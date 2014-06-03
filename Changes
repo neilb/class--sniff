@@ -6,6 +6,8 @@ Revision history for Class-Sniff
     - The duplicate methods test in t/code_smells.t was failing due to
       the hash randomization change in Perl 5.18. The duplicate methods
       table is now always sorted, to make the output deterministic.
+    - Enforce case-sensitivity with command-line options, so --ignore
+      and -I don't clash if you shorten --ignore to -i. RT#53423
 
 0.09    11/09/2011
         - Allow multiple paths to @INC (Bruno Vecchi)
