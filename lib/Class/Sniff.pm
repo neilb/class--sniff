@@ -24,7 +24,7 @@ Version 0.09
 
 =cut
 
-our $VERSION = '0.09';
+our $VERSION = '0.09_01';
 
 =head1 SYNOPSIS
 
@@ -1128,8 +1128,9 @@ sub _is_real_package {
     return 1 if 'UNIVERSAL' eq $class;
     return
       unless eval {
-        defined *{ ${"${class}::"}{ISA} }{ARRAY}
-          || scalar grep { defined *{$_}{CODE} } values %{"$class\::"};
+          my $stash = \%{"$class\::"};
+          defined $stash->{ISA} && defined *{ $stash->{ISA} }{ARRAY}
+            || scalar grep { defined *{$_}{CODE} } values %$stash;
       };
 }
 

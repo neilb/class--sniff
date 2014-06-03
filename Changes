@@ -1,5 +1,9 @@
 Revision history for Class-Sniff
 
+0.09_01 2014-06-04
+    - Applied patch from Father C, which related to a change in 5.16+
+      to do with *{$undef}. RT#72158.
+
 0.09    11/09/2011
         - Allow multiple paths to @INC (Bruno Vecchi)
         - Searching for classes in more than one directory (Bruno Vecchi)
