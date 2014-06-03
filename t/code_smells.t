@@ -79,12 +79,12 @@ like $report,
 like $report, qr/Duplicate Methods/,
     'The report should identify duplicate methods';
 like $report,
-    qr/Abstract::foo     $bar Grandchild::bar 
-                 $bar_newline Grandchild::quux
-                 $bar_newline Grandchild::foo
+    qr/Grandchild::quux     $bar Abstract::bar
+                 $bar_newline Abstract::baz
+                 $bar_newline Abstract::foo
                  $bar_newline Child2::bar
-                 $bar_newline Abstract::bar
-                 $bar_newline Abstract::baz $bar \n
+                 $bar_newline Grandchild::bar
+                 $bar_newline Grandchild::foo $bar \n
     \| \s* Child2::foo   $bar Child1::foo/x,
   '... and not miss any';
 like $report, qr/Long Methods/,

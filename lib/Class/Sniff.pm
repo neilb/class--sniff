@@ -603,7 +603,6 @@ removed.  You may feel OK with this if the duplicated methods are exported
 "helper" subroutines such as "Carp::croak".
 
 =cut
-
 sub duplicate_methods {
     my $self = shift;
     my @duplicates;
@@ -762,14 +761,22 @@ sub report {
     return $report;
 }
 
+# The fruity sorts below were me trying to work out why one test was failing;
+# it was down to the random order of methods being listed in this report.
+# I suspect it started failing with the hash randomization change in Perl.
+# Now I know how / where to make things deterministic, I'll come back sometime
+# and make this more elegant -- NEILB 2014-06-03
 sub _get_duplicate_method_report {
     my $self = shift;
 
     my $report    = '';
     my @duplicate = $self->duplicate_methods;
+    for (my $i = 0; $i < @duplicate; $i++) {
+        $duplicate[$i] = [sort { $a->[0] cmp $b->[0] || $a->[1] cmp $b->[1] } @{ $duplicate[$i] }];
+    }
     my ( @methods, @duplicates );
     if (@duplicate) {
-        foreach my $duplicate (@duplicate) {
+        foreach my $duplicate (sort { $a->[0]->[0] cmp $b->[0]->[0] || $a->[0]->[1] cmp $b->[0]->[1]} @duplicate) {
             push @methods => join '::' => @{ pop @$duplicate };
             push @duplicates => join "\n" => map { join '::' => @$_ }
               @$duplicate;
@@ -1130,7 +1137,7 @@ sub _is_real_package {
       unless eval {
           my $stash = \%{"$class\::"};
           defined $stash->{ISA} && defined *{ $stash->{ISA} }{ARRAY}
-            || scalar grep { defined *{$_}{CODE} } values %$stash;
+            || scalar grep { defined *{$_}{CODE} } sort values %$stash;
       };
 }
 
