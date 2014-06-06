@@ -20,11 +20,11 @@ Class::Sniff - Look for class composition code smells
 
 =head1 VERSION
 
-Version 0.09
+Version 0.10
 
 =cut
 
-our $VERSION = '0.09_01';
+our $VERSION = '0.10';
 
 =head1 SYNOPSIS
 
@@ -80,9 +80,7 @@ The constructor accepts a hashref with the following parameters:
 
 =over 4
 
-=item * C<class>
-
-Mandatory.
+=item * C<class> (mandatory)
 
 The name of the class to sniff.  If the class is not loaded into memory, the
 constructor will still work, but nothing will get reported.  You must ensure
@@ -91,38 +89,31 @@ that your class is already loaded!
 If you pass it an instance of a class instead, it will call 'ref' on the class
 to determine what class to use.
 
-=item * C<ignore>
+=item * C<ignore> (optional)
 
-Optional.
-
-This should be a regex telling C<Class::Sniff> what to ignore in class names.
+This should be a regexp telling C<Class::Sniff> what to ignore in class names.
 This is useful if you're inheriting from a large framework and don't want to
 report on it.  Be careful with this, though.  If you have a complicated
 inheritance hierarchy and you try to ignore something other than the root, you
 will likely get bad information returned.
 
-=item * universal
-
-Optional.
+=item * C<universal> (optional)
 
 If present and true, will attempt to include the C<UNIVERSAL> base class.  If
 a class hierarchy is pruned with C<ignore>, C<UNIVERSAL> may not show up.
 
-=item * clean
-
-Optional.
+=item * C<clean> (optional)
 
 If present, will automatically ignore "pseudo-packages" such as those ending
 in C<::SUPER> and C<::ISA::CACHE>.  If you have legitimate packages with these
 names, oops.
 
-=item * method_length
+=item * C<method_length> (optional)
 
-Optional.
-
-If present, will set the "maximum length" of a method before it's reported as
-a code smell.  This feature is I<highly> experimental.  See C<long_methods>
-for details.
+If present, will set the "maximum length" of a method (lines of code)
+before it's reported as a code smell.
+This feature is I<highly> experimental.
+See C<long_methods> for details.
 
 =back
 
@@ -181,8 +172,8 @@ and analyze the symbol table.
 Given a namespace, returns a list of C<Class::Sniff> objects namespaces which
 start with the C<$namespace> string.  Requires a C<namespace> argument.
 
-If you prefer, you can pass C<namespace> a regex and it will simply return a
-list of all namespaces matching that regex:
+If you prefer, you can pass C<namespace> a regexp and it will simply return a
+list of all namespaces matching that regexp:
 
  my @sniffs = Class::Sniff->new_from_namespace({
      namespace => qr/Result(?:Set|Source)/,
@@ -372,8 +363,9 @@ sub _register_class {
 
  my $overridden = $sniff->overridden;
 
-This method returns a hash of arrays.  Each key is a method in the hierarchy
-which has been overridden and the arrays are lists of all classes the method
+This method returns a hash of arrays.
+Each key is the name of a method in the hierarchy
+that has been overridden, and the arrays are lists of all classes the method
 is defined in (not just which one's it's overridden in).  The order of the
 classes is in Perl's default inheritance search order.
 
@@ -418,8 +410,9 @@ Returns an empty hashref if no exported subs are found.
 =head3 Code Smell:  exported subroutines
 
 Generally speaking, you should not be exporting subroutines into OO code.
-Quite often this happens with things like C<Carp::croak> and other modules
-which export "helper" functions.  These functions may not behave like you
+Quite often this happens when using modules like C<Carp::croak>,
+which exports subroutines into the use'ing module.
+These functions may not behave like you
 expect them to since they're generally not intended to be called as methods.
 
 =cut
@@ -434,7 +427,7 @@ sub exported { $_[0]->{exported} }
  }
 
 Returns a list of fully qualified method names (e.g.,
-'My::Customer::_short_change') which are unreachable by Perl's normal search
+'My::Customer::_short_change') that are unreachable by Perl's normal search
 inheritance search order.  It does this by searching the "paths" returned by
 the C<paths> method.
 
@@ -521,8 +514,8 @@ structured as above:
      ['Animal::Platypus', 'Animal::Duck', 'Animal::SpareParts', 'Animal'],
  );
 
-At the present time, we do I<no> validation of what's passed in.  It's just an
-experimental (and untested) hack.
+At the present time, we do I<no> validation of what's passed in.
+It's just an experimental (and untested) hack.
 
 =head3 Code Smell:  paths
 
@@ -549,7 +542,7 @@ sub paths {
  my $num_classes = $sniff->multiple_inheritance;
  my @classes     = $sniff->multiple_inheritance;
 
-Returns a list of all classes which inherit from more than one class.
+Returns a list of all classes that inherit from more than one class.
 
 =head3 Code Smell:  multiple inheritance
 
@@ -570,7 +563,7 @@ module.
  my $num_duplicates = $self->duplicate_methods;
  my @duplicates     = $self->duplicate_methods;
 
-Returns either the number of duplicate methods found a list of array refs.
+Returns either the number of duplicate methods found, or a list of array refs.
 Each arrayref contains a list of array references, each having a class name
 and method name.
 
@@ -619,7 +612,8 @@ sub duplicate_methods {
  my $num_long_methods = $sniff->long_methods;
  my %long_methods     = $sniff->long_methods;
 
-Returns methods longer than C<method_length>.  This value defaults to 50 and
+Returns methods longer than C<method_length>.
+This value defaults to 50 (lines) and
 can be overridden in the constructor (but not later).
 
 =over 4
@@ -669,7 +663,7 @@ comfortable with are, nonetheless, easy to write, understand, and maintain.
 Take this with a grain of salt.  See the book "Code Complete 2" by Microsoft
 Press for more information on the research.  That being said ...
 
-Long methods might be doing to much and should be broken down into smaller
+Long methods might be doing too much and should be broken down into smaller
 methods.  They're harder to follow, harder to debug, and if they're doing more
 than one thing, you might find that you need that functionality elsewhere, but
 now it's tightly coupled to the long method's behavior.  As always, use your
@@ -710,7 +704,7 @@ sub parents {
 
  print $sniff->report;
 
-Prints out a detailed, human readable report of C<Class::Sniff>'s analysis of
+Returns a detailed, human readable report of C<Class::Sniff>'s analysis of
 the class.  Returns an empty string if no issues found.  Sample:
 
  Report for class: Grandchild
@@ -959,9 +953,9 @@ exceptionally useful if you have C<GraphViz> installed.
 Visual representations of complex hierarchies are worth their weight in gold.
 See L<http://pics.livejournal.com/publius_ovidius/pic/00015p9z>.
 
-Because I cannot figure force it to respect the 'left/right' ordering of
-classes, you may need to manually edit the C<$graphviz> data to get this
-right.
+Because I cannot figure out how to force it to respect the 'left/right'
+ordering of classes,
+you may need to manually edit the C<$graphviz> data to get this right.
 
 =cut
 
@@ -1024,7 +1018,7 @@ sub method_length { $_[0]->{method_length} }
 
  my $ignore = $sniff->ignore;
 
-This is the regex provided (if any) to the constructor's C<ignore> parameter.
+This is the regexp provided (if any) to the constructor's C<ignore> parameter.
 
 =cut
 

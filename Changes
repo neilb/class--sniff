@@ -1,5 +1,8 @@
 Revision history for Class-Sniff
 
+0.10 2014-06-07
+    - Tidied up the documentation: formatting tweaks, typos, etc.
+
 0.09_01 2014-06-04
     - Applied patch from Father C, which related to a change in 5.16+
       to do with *{$undef}. RT#72158.
