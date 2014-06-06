@@ -1,31 +1,34 @@
 ---
-name: Class-Sniff
-version: 0.08_05
+abstract: 'Look for class composition code smells'
 author:
   - 'Curtis "Ovid" Poe <ovid@cpan.org>'
-abstract: Look for class composition code smells
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-requires:
-  B::Concise: 0.66
-  Devel::Symdump: 2.08
-  Digest::MD5: 2.36
-  File::Find::Rule: 0.3
-  Graph::Easy: 0.64
-  List::MoreUtils: 0.22
-  Sub::Identify: 0.03
-  Text::SimpleTable: 0.05
 build_requires:
-  Test::Most: 0.2
+  Test::Most: '0.2'
+configure_requires:
+  Module::Build: '0.42'
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4205, CPAN::Meta::Converter version 2.141170'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Class-Sniff
 provides:
   Class::Sniff:
     file: lib/Class/Sniff.pm
-    version: 0.08_05
+    version: '0.10'
   Class::Sniff::App:
     file: lib/Class/Sniff/App.pm
-    version: 0.08_05
-generated_by: Module::Build version 0.33
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+    version: '0.10'
+requires:
+  B::Concise: '0.66'
+  Devel::Symdump: '2.08'
+  Digest::MD5: '2.36'
+  File::Find::Rule: '0.3'
+  Graph::Easy: '0.64'
+  List::MoreUtils: '0.22'
+  Sub::Identify: '0.03'
+  Text::SimpleTable: '0.05'
+resources:
+  license: http://dev.perl.org/licenses/
+version: '0.10'
